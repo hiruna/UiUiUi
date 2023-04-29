@@ -3,19 +3,19 @@
 
 #pragma once
 
-#include "Arduino.h"
 #include <U8g2lib.h>
 
+#include "Arduino.h"
+
 // Basic helper classes and definitions
+#include "UIArea.h"
 #include "UIEnums.h"
 #include "UIPoint.h"
 #include "UISize.h"
-#include "UIArea.h"
 
 // Simple widgets
 #include "UIWidget.h"
 #include "UIWidgetGroup.h"
-
 
 /** Widget group which shows nothing or exactly one of its sub-widgets
  *
@@ -32,15 +32,13 @@
  *
  * The two methods `hide()` and `showFirstWidget()` act as syntactic sugar for this operation mode.
  */
-class UICards: public UIWidgetGroup {
-
-  public:
-
+class UICards : public UIWidgetGroup {
+   public:
     /** Initialize the cards widget with the first widget and a potential successor on the same level. */
-    UICards(UIWidget* firstChild,UIWidget* next=nullptr);
+    UICards(UIWidget *firstChild, UIWidget *next = nullptr);
 
     /** Layout the cards widget. */
-    void layout(U8G2* display,UIArea* dim);
+    void layout(U8G2 *display, UIArea *dim);
 
     /** Set the widget to show on the area of the cards widget group.
      *
@@ -52,31 +50,37 @@ class UICards: public UIWidgetGroup {
      */
     void setVisibleWidget(UIWidget *visible);
 
+    /** Returns a pointer to the current visible widget */
+    UIWidget *getVisibleWidget();
+
     /** Shortcut: Hide all widgets, clear the UICards area on the display. */
     void hide();
 
     /** Shortcut: Show first widget. */
     void showFirstWidget();
 
+    /** Shortcut: Show previous visible widget. */
+    void showPreviousVisibleWidget();
+
     /** Render the cards widget group onto the display. */
-    UIArea* render(U8G2 *display,bool force);
+    UIArea *render(U8G2 *display, bool force);
 
     /** UICards will consider the render request from the child only if it is the currently visible child. */
     void childNeedsRendering(UIWidget *child);
 
-  protected:
-
+   protected:
     /** Compute the preferred size as the maximum envelope of the preferred sizes of all subwidgets. */
-    void computePreferredSize(U8G2 *display,UISize *preferredSize);
+    void computePreferredSize(U8G2 *display, UISize *preferredSize);
 
-  private:
-
+   private:
     /** Pointer to the visible widget. */
     UIWidget *visible;
 
+    /** Pointer to the previous visible widget. */
+    UIWidget *previousVisible;
+
     /** Flag whether redraw has to take place. */
     bool forceInternally;
-
 };
 
 // end of file
